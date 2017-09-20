@@ -1,3 +1,4 @@
+package moynes.imggen
 import java.lang.ProcessBuilder
 import java.lang.ProcessBuilder.Redirect
 import java.lang.Process
@@ -38,7 +39,7 @@ fun main(args: Array<String>){
   "\"KT-Alerts.mov\"",
   "-vf",
   "fps=1/600",
-  "thumb%04d.png")
+  "thumbs/thumb%04d.png")
   createAndExecute(processArgs)
 
   //grab the single frame at 00:00:00
@@ -50,9 +51,10 @@ fun main(args: Array<String>){
   "\"KT-Alerts.mov\"",
   "-vframes",
   "1",
-  "thumb0000.png")
+  "thumbs/thumb0000.png")
   createAndExecute(processArgs)
 
+  //start at 10 minutes, and every minute (1/60) for 10 minutes
   processArgs = listOf("c:/ffmpeg/bin/ffmpeg.exe",
   "-y",
   "-ss",
@@ -63,9 +65,10 @@ fun main(args: Array<String>){
   "\"KT-Alerts.mov\"",
   "-vf",
   "fps=\"1/60\"",
-  "\"start_at_10_for_10_by_1_min_%04d.png\"")
+  "\"thumbs/start_at_10_for_10_by_1_min_%04d.png\"")
   createAndExecute(processArgs)
 
+  //start at 1 hour, and every minute (1/60) for 10 minutes
   processArgs = listOf("c:/ffmpeg/bin/ffmpeg.exe",
   "-y",
   "-ss",
@@ -76,10 +79,8 @@ fun main(args: Array<String>){
   "\"KT-Alerts.mov\"",
   "-vf",
   "fps=\"1/60\"",
-  "\"start_at_60_for_10_by_1_min_%04d.png\"")
-  createAndExecute(processArgs)
-}
-fun createAndExecute(processArgs: List<String>){
+  "\"thumbs/start_at_60_for_10_by_1_min_%04d.png\"")
+
   /*val processArgs = listOf("c:/ffmpeg/bin/ffmpeg.exe",
   "-y",
   "-ss",
@@ -91,6 +92,9 @@ fun createAndExecute(processArgs: List<String>){
   "-vf",
   "fps=\"1/60\"",
   "\"start_at_10_for_10_by_1_min_%04d.png\"")*/
+  createAndExecute(processArgs)
+}
+fun createAndExecute(processArgs: List<String>){
 
   val pb = ProcessBuilder(processArgs)
   pb.redirectOutput(Redirect.appendTo(File("output")))
@@ -104,5 +108,19 @@ fun createAndExecute(processArgs: List<String>){
     println("isAlive: ${p.isAlive()} ")
     Thread.sleep(1000)
   }
+}
 
+fun createAndExecute(startTime: String, interval: String, outputPattern: String){
+  val processArgs = listOf("c:/ffmpeg/bin/ffmpeg.exe",
+    "-y", //overwrite existing files
+    "-ss",
+    startTime,
+    "-t",
+    interval,
+    "-i",
+    "\"KT-Alerts.mov\"",
+    "-vf",
+    "fps=\"1/60\"",
+    "\"$outputPattern\"")
+    createAndExecute(processArgs)
 }
