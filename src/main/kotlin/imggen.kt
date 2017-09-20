@@ -110,17 +110,23 @@ fun createAndExecute(processArgs: List<String>){
   }
 }
 
-fun createAndExecute(startTime: String, interval: String, outputPattern: String){
+fun createAndExecute(startTime: String, duration: String, period: String, outputPattern: String){
+  val fps = if (period == "00:01:00"){
+    "1/60"
+  } else {
+    "1/60"
+  }
+
   val processArgs = listOf("c:/ffmpeg/bin/ffmpeg.exe",
     "-y", //overwrite existing files
     "-ss",
     startTime,
     "-t",
-    interval,
+    duration,
     "-i",
     "\"KT-Alerts.mov\"",
     "-vf",
-    "fps=\"1/60\"",
+    "fps=\"$fps\"",
     "\"$outputPattern\"")
     createAndExecute(processArgs)
 }

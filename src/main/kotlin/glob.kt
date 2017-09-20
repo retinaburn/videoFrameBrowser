@@ -6,14 +6,15 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
 
-public data class ThumbImage(val time: String, val interval: String, val name: String);
+public data class ThumbImage(val start: String, val duration: String, val period: String, val name: String);
 
-fun glob(args: Array<String>): List<ThumbImage>? {
+fun glob(args: Array<String>): List<ThumbImage> {
+  var images = ArrayList<ThumbImage>()
   if (args.isEmpty()){
-    return null
+    return images
   }
   for (arg in args){
-    var images = ArrayList<ThumbImage>()
+
     val file = File(arg)
 
     if (file.exists()){
@@ -30,7 +31,7 @@ fun glob(args: Array<String>): List<ThumbImage>? {
     }
     return images
   }
-  return null
+  return images
 }
 
 fun body(file: File): ThumbImage{
@@ -43,6 +44,6 @@ fun body(file: File): ThumbImage{
   searchString = "_min_"
   val thumbIndex = file.toString().indexOf(searchString)+searchString.length
   val thumbVal = file.toString().substring(thumbIndex, thumbIndex+4)
-  mm = (mm.toInt()+thumbVal.toInt()-1).toString()
-  return ThumbImage("$hh:$mm:00.000","00:01:00.000",file.toString())
+  mm = String.format("%02d",(mm.toInt()+thumbVal.toInt()-1))
+  return ThumbImage("$hh:$mm:00.000","00:01:00.000","00:01:00.000",file.toString())
 }

@@ -32,13 +32,13 @@ fun main(args: Array<String>){
   Application.launch(JFX::class.java, *args)
 }
 
-val images = listOf(ThumbImage("00:00:00.000", "00:10:00.000", "thumbs/thumb0000.png"),
-  ThumbImage("00:10:00.000", "00:10:00.000", "thumbs/thumb0001.png"),
-//  ThumbImage("00:20:00.000", "00:10:00.000", "thumbs/thumb0002.png"),
-//  ThumbImage("00:30:00.000", "00:10:00.000", "thumbs/thumb0003.png"),
-//  ThumbImage("00:40:00.000", "00:10:00.000", "thumbs/thumb0004.png"),
-//  ThumbImage("00:50:00.000", "00:10:00.000", "thumbs/thumb0005.png"),
-  ThumbImage("01:00:00.000", "00:10:00.000", "thumbs/thumb0006.png"))
+val images = listOf(ThumbImage("00:00:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0000.png"),
+  ThumbImage("00:10:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0001.png"),
+//  ThumbImage("00:20:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0002.png"),
+//  ThumbImage("00:30:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0003.png"),
+//  ThumbImage("00:40:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0004.png"),
+//  ThumbImage("00:50:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0005.png"),
+  ThumbImage("01:00:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0006.png"))
 
 val SCREEN_WIDTH = 1200.0
 val SCREEN_HEIGHT = 600.0
@@ -96,21 +96,40 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
     event.consume()
     println("CLICKED ${image.name}")
     println(image)
-    println("${image.time.substring(3,5)}")
-
 
     for(existingImage in childImages){
       grid.getChildren().remove(existingImage)
     }
     childImages.clear()
 
-    val hhmm = image.time.substring(0,2)+image.time.substring(3,5)
-    createAndExecute(startTime=image.time, interval=image.interval, outputPattern="thumbs/start_at_${hhmm}_for_10_by_1_min_%04d.png")
-    val imgarg = arrayOf("./thumbs/start_at_${hhmm}_for_10_by_1_min*.png")
+    val hhmm = image.start.substring(0,2)+image.start.substring(3,5)
 
+    val duration = if (image.duration == "VIDEO_LENGTH") {
+      "00:10:00"
+    } else if (image.duration == "00:10:00"){
+      "00:01:00"
+    } else {
+      "00:00:01"
+    }
+
+    val period = if (duration == "00:10:00"){
+      "00:01:00"
+    } else if ("00:01:00") {
+      "00:00:01"
+    }
+
+    //see if there are matching images already
+    val imgarg = arrayOf("./thumbs/start_at_${hhmm}_for_10_by_1_min*.png")
     println("Finding images for pattern: ${imgarg[0]}")
-    val newImages = glob(imgarg)
-    newImages?.let{
+    var newImages = glob(imgarg)
+    if (newImages.isEmpty()){
+      createAndExecute(startTime=image.start, duration=duration, period=period, outputPattern="thumbs/start_at_${hhmm}_for_10_by_1_min_%04d.png")
+
+      println("Finding images for pattern: ${imgarg[0]}")
+      newImages = glob(imgarg)
+    }
+
+    if(!newImages.isEmpty()){
       println("Found ${newImages}")
       val colStartIndex=2
       var rowIndex = 0
