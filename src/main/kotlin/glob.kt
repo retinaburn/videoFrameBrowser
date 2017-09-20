@@ -34,5 +34,10 @@ fun glob(args: Array<String>): List<ThumbImage>? {
 }
 
 fun body(file: File): ThumbImage{
-  return ThumbImage("1","1",file.toString())
+  val searchString = "start_at_"
+  //get the HHMM timestamp from the filename into separate elements
+  val hhmmIndex = file.toString().indexOf(searchString)+searchString.length
+  val hh = file.toString().substring(hhmmIndex, hhmmIndex+2)
+  val mm = file.toString().substring(hhmmIndex+2, hhmmIndex+2+2)
+  return ThumbImage("$hh:$mm:00.000","00:01:00.000",file.toString())
 }

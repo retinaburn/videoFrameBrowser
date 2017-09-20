@@ -38,7 +38,7 @@ val images = listOf(ThumbImage("00:00:00.000", "00:10:00.000", "thumbs/thumb0000
 //  ThumbImage("00:30:00.000", "00:10:00.000", "thumbs/thumb0003.png"),
 //  ThumbImage("00:40:00.000", "00:10:00.000", "thumbs/thumb0004.png"),
 //  ThumbImage("00:50:00.000", "00:10:00.000", "thumbs/thumb0005.png"),
-  ThumbImage("00:60:00.000", "00:10:00.000", "thumbs/thumb0006.png"))
+  ThumbImage("01:00:00.000", "00:10:00.000", "thumbs/thumb0006.png"))
 
 val SCREEN_WIDTH = 1200.0
 val SCREEN_HEIGHT = 600.0
@@ -104,8 +104,9 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
     }
     childImages.clear()
 
-    createAndExecute(startTime=image.time, interval=image.interval, outputPattern="thumbs/start_at_${image.time.substring(3,5)}_for_10_by_1_min_%04d.png")
-    val imgarg = arrayOf("./thumbs/start_at_${image.time.substring(3,5)}_for_10_by_1_min*.png")
+    val hhmm = image.time.substring(0,2)+image.time.substring(3,5)
+    createAndExecute(startTime=image.time, interval=image.interval, outputPattern="thumbs/start_at_${hhmm}_for_10_by_1_min_%04d.png")
+    val imgarg = arrayOf("./thumbs/start_at_${hhmm}_for_10_by_1_min*.png")
 
     println("Finding images for pattern: ${imgarg[0]}")
     val newImages = glob(imgarg)
