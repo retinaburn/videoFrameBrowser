@@ -125,7 +125,7 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
   }
 }
 
-
+/*
 public class LineGrid : Pane{
   val canvas = Canvas()
   val dashLength = 5.0
@@ -172,3 +172,4 @@ public class LineGrid : Pane{
     }
   }
 }
+*/
