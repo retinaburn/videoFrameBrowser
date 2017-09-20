@@ -25,19 +25,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent
 
 import moynes.glob.*
+import moynes.imggen.createAndExecute
 
 
 fun main(args: Array<String>){
   Application.launch(JFX::class.java, *args)
 }
 
-val images = listOf(ThumbImage("00:00:00.000", "00:10:00.000", "thumb0000.png"),
-  ThumbImage("00:10:00.000", "00:10:00.000", "thumb0001.png"),
-//  ThumbImage("00:20:00.000", "00:10:00.000", "thumb0002.png"),
-//  ThumbImage("00:30:00.000", "00:10:00.000", "thumb0003.png"),
-//  ThumbImage("00:40:00.000", "00:10:00.000", "thumb0004.png"),
-//  ThumbImage("00:50:00.000", "00:10:00.000", "thumb0005.png"),
-  ThumbImage("00:60:00.000", "00:10:00.000", "thumb0006.png"))
+val images = listOf(ThumbImage("00:00:00.000", "00:10:00.000", "thumbs/thumb0000.png"),
+  ThumbImage("00:10:00.000", "00:10:00.000", "thumbs/thumb0001.png"),
+//  ThumbImage("00:20:00.000", "00:10:00.000", "thumbs/thumb0002.png"),
+//  ThumbImage("00:30:00.000", "00:10:00.000", "thumbs/thumb0003.png"),
+//  ThumbImage("00:40:00.000", "00:10:00.000", "thumbs/thumb0004.png"),
+//  ThumbImage("00:50:00.000", "00:10:00.000", "thumbs/thumb0005.png"),
+  ThumbImage("00:60:00.000", "00:10:00.000", "thumbs/thumb0006.png"))
 
 val SCREEN_WIDTH = 1200.0
 val SCREEN_HEIGHT = 600.0
@@ -96,12 +97,15 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
     println("CLICKED ${image.name}")
     println(image)
     println("${image.time.substring(3,5)}")
-    val imgarg = arrayOf("./start_at_${image.time.substring(3,5)}_for_10_by_1_min*.png")
+
 
     for(existingImage in childImages){
       grid.getChildren().remove(existingImage)
     }
     childImages.clear()
+
+    createAndExecute(startTime=image.time, interval=image.interval, outputPattern="thumbs/start_at_${image.time.substring(3,5)}_for_10_by_1_min_%04d.png")
+    val imgarg = arrayOf("./thumbs/start_at_${image.time.substring(3,5)}_for_10_by_1_min*.png")
 
     println("Finding images for pattern: ${imgarg[0]}")
     val newImages = glob(imgarg)
