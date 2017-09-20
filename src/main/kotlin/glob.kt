@@ -34,5 +34,5 @@ fun glob(args: Array<String>): List<ThumbImage>? {
 }
 
 fun body(file: File): ThumbImage{
-  return ThumbImage("1","1",file.getName())
+  return ThumbImage("1","1",file.toString())
 }
