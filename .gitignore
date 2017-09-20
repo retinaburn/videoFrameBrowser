@@ -1,1 +1,5 @@
 target/*
+*.png
+error
+output
+src/main/kotlin/imggen.jar
