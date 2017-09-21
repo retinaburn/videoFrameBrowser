@@ -39,14 +39,13 @@ fun body(file: File): ThumbImage{
   var searchStringEnd = "_"
   val startTimestamp = getTimestamp(file.toString(), searchString, searchStringEnd)
   //get the HHMM timestamp from the filename into separate elements
-  val hh = startTimestamp.substring(0, 2)
-  var mm = startTimestamp.substring(2, 4)
+  var (hh,mm,ss) = getTimestampComponents(startTimestamp)
+
 
   //get the number of the thumbnail to find the actual start time
   searchString = "_"
   val thumbIndex = file.toString().lastIndexOf(searchString)+1
   val thumbVal = file.toString().substring(thumbIndex, thumbIndex+4)
-  mm = String.format("%02d",(mm.toInt()+thumbVal.toInt()-1))
 
   //get the duration
   searchString = "_for_"
@@ -60,7 +59,17 @@ fun body(file: File): ThumbImage{
   val periodTimestamp = getTimestamp(file.toString(), searchString, searchStringEnd)
   val (periodHH,periodMM,periodSS) = getTimestampComponents(periodTimestamp)
 
-  return ThumbImage("$hh:$mm:00.000",
+  //if the period is by minute, then the thumb count ()"0001.png") is a minute
+  //and we add it to the start time minutes to get it accurate
+  //if the period is by second, then the thumb count is a second
+  //and we add it to the start time seconds to get it accurate
+  if(periodTimestamp == "000100"){
+    mm = String.format("%02d",(mm.toInt()+thumbVal.toInt()-1))
+  } else if (periodTimestamp == "000001"){
+    ss = String.format("%02d",(ss.toInt()+thumbVal.toInt()-1))
+  }
+
+  return ThumbImage("$hh:$mm:$ss.000",
     "$durationHH:$durationMM:$durationSS.000",
     "$periodHH:$periodMM:$periodSS.000",file.toString())
 }
