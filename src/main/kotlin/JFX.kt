@@ -129,7 +129,7 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
       createAndExecute(startTime=image.start,
         duration=duration,
         period=period,
-        outputPattern="thumbs/start_${genStartTime}_for_${genDuration}_by_${genPeriod}__%04d.png")
+        outputPattern="thumbs/start_${genStartTime}_for_${genDuration}_by_${genPeriod}_%04d.png")
 
       print("Finding generated images for pattern: ${imgarg[0]}...")
       newImages = glob(imgarg)
