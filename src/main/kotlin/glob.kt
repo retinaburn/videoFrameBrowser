@@ -64,14 +64,27 @@ fun body(file: File): ThumbImage{
   //if the period is by second, then the thumb count is a second
   //and we add it to the start time seconds to get it accurate
   if(periodTimestamp == "000100"){
-    mm = String.format("%02d",(mm.toInt()+thumbVal.toInt()-1))
+    mm = mm+thumbVal.toInt()-1
+
   } else if (periodTimestamp == "000001"){
-    ss = String.format("%02d",(ss.toInt()+thumbVal.toInt()-1))
+    ss = ss+thumbVal.toInt()-1
   }
 
-  return ThumbImage("$hh:$mm:$ss.000",
-    "$durationHH:$durationMM:$durationSS.000",
-    "$periodHH:$periodMM:$periodSS.000",file.toString())
+  //proper roll over for seconds
+  if (ss >= 60){
+    mm++
+    ss=ss-60
+  }
+  if (mm >= 60){
+    hh++
+    mm=mm-60
+  }
+
+  return ThumbImage(
+    String.format("%02d:%02d:%02d.000",hh,mm,ss),
+    String.format("%02d:%02d:%02d.000",durationHH,durationMM,durationSS),
+    String.format("%02d:%02d:%02d.000",periodHH,periodMM,periodSS),
+    file.toString())
 }
 
 fun getTimestamp(key: String, searchStringStart: String, searchStringEnd: String): String{
@@ -80,9 +93,9 @@ fun getTimestamp(key: String, searchStringStart: String, searchStringEnd: String
   return key.substring(searchStringStartIndex, searchStringEndIndex)
 }
 
-fun getTimestampComponents(key: String): Triple<String, String, String>{
-  val hh = key.substring(0,2)
-  val mm = key.substring(2,4)
-  val ss = key.substring(4,6)
+fun getTimestampComponents(key: String): Triple<Int, Int, Int>{
+  val hh = key.substring(0,2).toInt()
+  val mm = key.substring(2,4).toInt()
+  val ss = key.substring(4,6).toInt()
   return Triple(hh, mm, ss)
 }
