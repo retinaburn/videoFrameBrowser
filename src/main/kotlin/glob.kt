@@ -35,15 +35,43 @@ fun glob(args: Array<String>): List<ThumbImage> {
 }
 
 fun body(file: File): ThumbImage{
-  var searchString = "start_at_"
+  var searchString = "start_"
+  var searchStringEnd = "_"
+  val startTimestamp = getTimestamp(file.toString(), searchString, searchStringEnd)
   //get the HHMM timestamp from the filename into separate elements
-  val hhmmIndex = file.toString().indexOf(searchString)+searchString.length
-  val hh = file.toString().substring(hhmmIndex, hhmmIndex+2)
-  var mm = file.toString().substring(hhmmIndex+2, hhmmIndex+2+2)
+  val hh = startTimestamp.substring(0, 2)
+  var mm = startTimestamp.substring(2, 4)
+
   //get the number of the thumbnail to find the actual start time
-  searchString = "_min_"
-  val thumbIndex = file.toString().indexOf(searchString)+searchString.length
+  searchString = "_"
+  val thumbIndex = file.toString().lastIndexOf(searchString)+1
   val thumbVal = file.toString().substring(thumbIndex, thumbIndex+4)
   mm = String.format("%02d",(mm.toInt()+thumbVal.toInt()-1))
-  return ThumbImage("$hh:$mm:00.000","00:01:00.000","00:01:00.000",file.toString())
+
+  //get the duration
+  searchString = "_for_"
+  searchStringEnd = "_"
+  val durationTimestamp = getTimestamp(file.toString(), searchString, searchStringEnd)
+  val durationHH = durationTimestamp.substring(0,2)
+  val durationMM = durationTimestamp.substring(2,4)
+  val durationSS = durationTimestamp.substring(4,6)
+
+  //get the period
+  searchString = "_by_"
+  searchStringEnd = "_"
+  val periodTimestamp = getTimestamp(file.toString(), searchString, searchStringEnd)
+  val periodHH = periodTimestamp.substring(0,2)
+  val periodMM = periodTimestamp.substring(2,4)
+  val periodSS = periodTimestamp.substring(4,6)
+
+  return ThumbImage("$hh:$mm:00.000",
+    "$durationHH:$durationMM:$durationSS.000",
+    "$periodHH:$periodMM:$periodSS.000",file.toString())
+}
+
+fun getTimestamp(key: String, searchStringStart: String, searchStringEnd: String): String{
+  val searchStringStartIndex = key.indexOf(searchStringStart)+searchStringStart.length
+  val searchStringEndIndex = key.indexOf(searchStringEnd, searchStringStartIndex)
+  return key.substring(searchStringStartIndex, searchStringEndIndex)
+
 }

@@ -114,16 +114,21 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
 
     val period = if (duration == "00:10:00"){
       "00:01:00"
-    } else if ("00:01:00") {
+    } else if (duration == "00:01:00") {
+      "00:00:01"
+    } else {
       "00:00:01"
     }
 
     //see if there are matching images already
-    val imgarg = arrayOf("./thumbs/start_at_${hhmm}_for_10_by_1_min*.png")
+    val imgarg = arrayOf("./thumbs/start_${hhmm}00_for_001000_by_000100_*.png")
     println("Finding images for pattern: ${imgarg[0]}")
     var newImages = glob(imgarg)
     if (newImages.isEmpty()){
-      createAndExecute(startTime=image.start, duration=duration, period=period, outputPattern="thumbs/start_at_${hhmm}_for_10_by_1_min_%04d.png")
+      createAndExecute(startTime=image.start,
+        duration=duration,
+        period=period,
+        outputPattern="thumbs/start_${hhmm}00_for_001000_by_000100_%04d.png")
 
       println("Finding images for pattern: ${imgarg[0]}")
       newImages = glob(imgarg)
