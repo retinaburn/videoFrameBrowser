@@ -52,17 +52,13 @@ fun body(file: File): ThumbImage{
   searchString = "_for_"
   searchStringEnd = "_"
   val durationTimestamp = getTimestamp(file.toString(), searchString, searchStringEnd)
-  val durationHH = durationTimestamp.substring(0,2)
-  val durationMM = durationTimestamp.substring(2,4)
-  val durationSS = durationTimestamp.substring(4,6)
+  val (durationHH, durationMM, durationSS) = getTimestampComponents(durationTimestamp)
 
   //get the period
   searchString = "_by_"
   searchStringEnd = "_"
   val periodTimestamp = getTimestamp(file.toString(), searchString, searchStringEnd)
-  val periodHH = periodTimestamp.substring(0,2)
-  val periodMM = periodTimestamp.substring(2,4)
-  val periodSS = periodTimestamp.substring(4,6)
+  val (periodHH,periodMM,periodSS) = getTimestampComponents(periodTimestamp)
 
   return ThumbImage("$hh:$mm:00.000",
     "$durationHH:$durationMM:$durationSS.000",
@@ -73,5 +69,11 @@ fun getTimestamp(key: String, searchStringStart: String, searchStringEnd: String
   val searchStringStartIndex = key.indexOf(searchStringStart)+searchStringStart.length
   val searchStringEndIndex = key.indexOf(searchStringEnd, searchStringStartIndex)
   return key.substring(searchStringStartIndex, searchStringEndIndex)
+}
 
+fun getTimestampComponents(key: String): Triple<String, String, String>{
+  val hh = key.substring(0,2)
+  val mm = key.substring(2,4)
+  val ss = key.substring(4,6)
+  return Triple(hh, mm, ss)
 }
