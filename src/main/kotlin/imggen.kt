@@ -111,10 +111,11 @@ fun createAndExecute(processArgs: List<String>){
 }
 
 fun createAndExecute(startTime: String, duration: String, period: String, outputPattern: String){
-  val fps = if (period == "00:01:00"){
-    "1/60"
-  } else {
-    "1/60"
+  println("Generating for startTime: $startTime, duration: $duration, period: $period")
+  val fps = when(period){
+    "00:01:00" -> "1/60"
+    "00:00:01" -> "1"
+    else -> "1/60"
   }
 
   val processArgs = listOf("c:/ffmpeg/bin/ffmpeg.exe",
