@@ -102,20 +102,17 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
     }
     childImages.clear()
 
-    val duration = if (image.duration == "VIDEO_LENGTH") {
-      "00:10:00"
-    } else if (image.duration == "00:10:00"){
-      "00:01:00"
-    } else {
-      "00:00:01"
+    val duration = when(image.duration){
+      "VIDEO_LENGTH"  -> "00:10:00"
+      "00:10:00.000"  -> "00:01:00"
+      "00:01:00.000"  -> "00:00:01"
+      else -> "00:00:01"
     }
 
-    val period = if (duration == "00:10:00"){
-      "00:01:00"
-    } else if (duration == "00:01:00") {
-      "00:00:01"
-    } else {
-      "00:00:01"
+    val period = when(duration) {
+      "00:10:00"  -> "00:01:00"
+      "00:01:00"  -> "00:00:01"
+      else -> "UHOH"
     }
 
     //get strings for timestamps in generated filename
@@ -134,7 +131,7 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
         period=period,
         outputPattern="thumbs/start_${genStartTime}_for_${genDuration}_by_${genPeriod}__%04d.png")
 
-      println("Finding images for pattern: ${imgarg[0]}")
+      print("Finding generated images for pattern: ${imgarg[0]}...")
       newImages = glob(imgarg)
     }
 
