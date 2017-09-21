@@ -102,8 +102,6 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
     }
     childImages.clear()
 
-    val hhmm = image.start.substring(0,2)+image.start.substring(3,5)
-
     val duration = if (image.duration == "VIDEO_LENGTH") {
       "00:10:00"
     } else if (image.duration == "00:10:00"){
@@ -120,22 +118,28 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
       "00:00:01"
     }
 
+    //get strings for timestamps in generated filename
+    val genStartTime = image.start.substring(0,8).replace(":","")
+    val genDuration = duration.substring(0,8).replace(":","")
+    val genPeriod = period.substring(0,8).replace(":","")
+
     //see if there are matching images already
-    val imgarg = arrayOf("./thumbs/start_${hhmm}00_for_001000_by_000100_*.png")
-    println("Finding images for pattern: ${imgarg[0]}")
+    val imgarg = arrayOf("./thumbs/start_${genStartTime}_for_${genDuration}_by_${genPeriod}_*.png")
+    print("Finding images for pattern: ${imgarg[0]}...")
     var newImages = glob(imgarg)
     if (newImages.isEmpty()){
+      println(".not found. Generating.")
       createAndExecute(startTime=image.start,
         duration=duration,
         period=period,
-        outputPattern="thumbs/start_${hhmm}00_for_001000_by_000100_%04d.png")
+        outputPattern="thumbs/start_${genStartTime}_for_${genDuration}_by_${genPeriod}__%04d.png")
 
       println("Finding images for pattern: ${imgarg[0]}")
       newImages = glob(imgarg)
     }
 
     if(!newImages.isEmpty()){
-      println("Found ${newImages}")
+      println(".found ${newImages}")
       val colStartIndex=2
       var rowIndex = 0
       var colIndex = 0
