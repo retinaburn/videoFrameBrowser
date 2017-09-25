@@ -9,6 +9,7 @@ import javafx.scene.control.ScrollPane
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -49,32 +50,46 @@ val images = listOf(ThumbImage("00:00:00.000", "VIDEO_LENGTH", "00:10:00", "thum
 val SCREEN_WIDTH = 1200.0
 val SCREEN_HEIGHT = 600.0
 
-var grid = GridPane()
+var imagePane = GridPane()
 
 public class JFX : Application() {
-  var sp = ScrollPane()
-  var vb = VBox();
+  var indexSP = ScrollPane() //holds index image box
+  var vb = VBox(); //holds index images
+  var displaySP = ScrollPane()
 
   var counter = 0
 
   override fun start(stage: Stage) {
-    var box = HBox()
+    //Scene
+    // - box
+    // --index Scroll Pane
+    // ---VBox (images)
+    // --display Scroll Pane
+    // ---image pane GridPane ()
+
+    var box = HBox() //main box - holds index(left) and flow pane (right)
     stage.setTitle("Hello World")
 
-    box.setPrefSize(100.0, 100.0)
-    vb.setPrefSize(100.0, 100.0)
+    //box.setPrefSize(100.0, 100.0)
+    //vb.setPrefSize(100.0, 100.0)
+    indexSP.setPrefSize(300.0, 300.0);
 
-    grid.setHgap(0.0)
-    grid.setVgap(0.0)
-
+    imagePane.setHgap(0.0)
+    imagePane.setVgap(0.0)
     var rowIndex = 0
+
+    indexSP.setContent(vb);
+    displaySP.setContent(imagePane)
+
     for(image in images){
       vb.getChildren().add(getImage(image))
       rowIndex++
     }
 
-    box.getChildren().add(sp)
-    VBox.setVgrow(sp, Priority.ALWAYS);
+    box.getChildren().add(indexSP)
+    box.getChildren().add(displaySP)
+
+    VBox.setVgrow(indexSP, Priority.ALWAYS);
     stage.setScene(Scene(box, SCREEN_WIDTH, SCREEN_HEIGHT, Color.BLACK))
 
     val listener = object : ChangeListener<Number> {
@@ -85,9 +100,7 @@ public class JFX : Application() {
         }
     }
 
-    sp.setPrefSize(300.0, 300.0);
-    sp.setContent(vb);
-    sp.vvalueProperty().addListener( listener );
+    indexSP.vvalueProperty().addListener( listener );
     stage.show()
   }
 }
@@ -117,7 +130,7 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
     println(image)
 
     for(existingImage in childImages){
-      grid.getChildren().remove(existingImage)
+      imagePane.getChildren().remove(existingImage)
     }
     childImages.clear()
 
@@ -156,69 +169,19 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
 
     if(!newImages.isEmpty()){
       println(".found ${newImages}")
-      val colStartIndex=2
       var rowIndex = 0
       var colIndex = 0
+      var MAX_COLS = 4
       for (image in newImages){
         val iv = getImage(image)
         childImages.add(iv)
-        grid.add(iv, colIndex+colStartIndex, rowIndex)
-        rowIndex++
-        rowIndex=rowIndex % 4
-        if (rowIndex == 0){
-          colIndex++
-          colIndex=colIndex % 4
+        imagePane.add(iv, colIndex, rowIndex)
+        colIndex++
+        if (colIndex == MAX_COLS){
+          rowIndex++
+          colIndex=colIndex % MAX_COLS
         }
       }
     }
   }
 }
-
-/*
-public class LineGrid : Pane{
-  val canvas = Canvas()
-  val dashLength = 5.0
-  val horizontalX = 3.0
-
-  constructor() {
-    getChildren().add(canvas)
-  }
-
-  override protected fun layoutChildren(){
-    val top = snappedTopInset().toInt()
-    val right = snappedRightInset().toInt()
-    val bottom = snappedBottomInset().toInt()
-    val left = snappedLeftInset().toInt()
-    val w = getWidth() - left - right
-    val h = getHeight() - top - bottom
-
-    canvas.setLayoutX(left.toDouble())
-    canvas.setLayoutY(top.toDouble())
-
-    if (w != canvas.getWidth() || h != canvas.getHeight()){
-      canvas.setWidth(w)
-      canvas.setHeight(h)
-      val g = canvas.getGraphicsContext2D()
-      g.clearRect(0.toDouble(), 0.toDouble(), w, h)
-
-      //vertical lines
-      g.setStroke(Color.DIMGRAY)
-      g.setLineDashes(dashLength)
-      for(i in 0..getWidth().toInt() step 30){
-        g.moveTo(i.toDouble(), 0.toDouble())
-        g.lineTo(i.toDouble(), getHeight() - (getHeight()%30))
-        g.stroke()
-      }
-
-      //horizontal lines
-      g.setLineDashes(dashLength)
-      for(i in 0..getHeight().toInt() step 30){
-        g.moveTo(horizontalX, i.toDouble())
-        g.lineTo(getWidth() - (getWidth()%30), i.toDouble())
-        g.stroke()
-      }
-
-    }
-  }
-}
-*/
