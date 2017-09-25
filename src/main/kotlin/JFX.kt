@@ -5,17 +5,23 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 import javafx.scene.canvas.Canvas;
+import javafx.stage.Stage;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue
 
 //images
 import javafx.scene.image.Image;
@@ -34,10 +40,10 @@ fun main(args: Array<String>){
 
 val images = listOf(ThumbImage("00:00:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0000.png"),
   ThumbImage("00:10:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0001.png"),
-//  ThumbImage("00:20:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0002.png"),
-//  ThumbImage("00:30:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0003.png"),
-//  ThumbImage("00:40:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0004.png"),
-//  ThumbImage("00:50:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0005.png"),
+  ThumbImage("00:20:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0002.png"),
+  ThumbImage("00:30:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0003.png"),
+  ThumbImage("00:40:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0004.png"),
+  ThumbImage("00:50:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0005.png"),
   ThumbImage("01:00:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0006.png"))
 
 val SCREEN_WIDTH = 1200.0
@@ -46,34 +52,47 @@ val SCREEN_HEIGHT = 600.0
 var grid = GridPane()
 
 public class JFX : Application() {
+  var sp = ScrollPane()
+  var vb = VBox();
+
   var counter = 0
 
   override fun start(stage: Stage) {
+    var box = HBox()
     stage.setTitle("Hello World")
 
-    var root = StackPane()
+    box.setPrefSize(100.0, 100.0)
+    vb.setPrefSize(100.0, 100.0)
 
     grid.setHgap(0.0)
     grid.setVgap(0.0)
 
     var rowIndex = 0
     for(image in images){
-      grid.add(getImage(image), 1, rowIndex)
+      vb.getChildren().add(getImage(image))
       rowIndex++
     }
 
-    root.getChildren().add(grid)
-    stage.setScene(Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT, Color.BLACK))
+    box.getChildren().add(sp)
+    VBox.setVgrow(sp, Priority.ALWAYS);
+    stage.setScene(Scene(box, SCREEN_WIDTH, SCREEN_HEIGHT, Color.BLACK))
 
-    /*val lineGrid = LineGrid()
-    lineGrid.getChildren().add(getImage("thumb0001.png"))
-    lineGrid.getChildren().add(getImage("thumb0002.png"))
-    lineGrid.getChildren().add(getImage("thumb0003.png"))
+    val listener = object : ChangeListener<Number> {
+      override fun changed(ob: ObservableValue<out Number>,
+        old_val: Number,
+        new_val: Number){
 
-    stage.setScene(Scene(lineGrid, SCREEN_WIDTH, SCREEN_HEIGHT, Color.BLACK))*/
+        }
+    }
+
+    sp.setPrefSize(300.0, 300.0);
+    sp.setContent(vb);
+    sp.vvalueProperty().addListener( listener );
     stage.show()
   }
 }
+
+
 
 fun getImage(image: ThumbImage): ImageView{
   val image1 = Image("file:${image.name}")
