@@ -47,10 +47,26 @@ val images = listOf(ThumbImage("00:00:00.000", "VIDEO_LENGTH", "00:10:00", "thum
   ThumbImage("00:50:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0005.png"),
   ThumbImage("01:00:00.000", "VIDEO_LENGTH", "00:10:00", "thumbs/thumb0006.png"))
 
-val SCREEN_WIDTH = 1200.0
+val IMAGE_WIDTH = 300.0
+
+val SCROLLBAR_WIDTH = 15.0
+
+val DESIRED_SCREEN_WIDTH = 1200.0
+val DESIRED_INDEX_WIDTH = IMAGE_WIDTH
+
+val SCREEN_WIDTH = DESIRED_SCREEN_WIDTH + (2*SCROLLBAR_WIDTH)
 val SCREEN_HEIGHT = 600.0
 
-var imagePane = GridPane()
+
+val INDEX_WIDTH = DESIRED_INDEX_WIDTH + SCROLLBAR_WIDTH
+val INDEX_HEIGHT = INDEX_WIDTH
+
+val DESIRED_IMAGE_PANE_WIDTH = DESIRED_SCREEN_WIDTH - INDEX_WIDTH + SCROLLBAR_WIDTH
+val IMAGE_PANE_WIDTH = DESIRED_IMAGE_PANE_WIDTH + SCROLLBAR_WIDTH
+
+
+
+var imagePane = FlowPane()
 
 public class JFX : Application() {
   var indexSP = ScrollPane() //holds index image box
@@ -65,14 +81,13 @@ public class JFX : Application() {
     // --index Scroll Pane
     // ---VBox (images)
     // --display Scroll Pane
-    // ---image pane GridPane ()
+    // ---image pane flowPane
 
     var box = HBox() //main box - holds index(left) and flow pane (right)
     stage.setTitle("Hello World")
 
-    //box.setPrefSize(100.0, 100.0)
-    //vb.setPrefSize(100.0, 100.0)
-    indexSP.setPrefSize(300.0, 300.0);
+    indexSP.setPrefSize(INDEX_WIDTH, INDEX_HEIGHT)
+    displaySP.setPrefSize(IMAGE_PANE_WIDTH,INDEX_HEIGHT)
 
     imagePane.setHgap(0.0)
     imagePane.setVgap(0.0)
@@ -80,6 +95,7 @@ public class JFX : Application() {
 
     indexSP.setContent(vb);
     displaySP.setContent(imagePane)
+    imagePane.setPrefWrapLength(DESIRED_IMAGE_PANE_WIDTH) //the size of the pane inside the scroll window
 
     for(image in images){
       vb.getChildren().add(getImage(image))
@@ -111,7 +127,7 @@ fun getImage(image: ThumbImage): ImageView{
   val image1 = Image("file:${image.name}")
   val iv1 = ImageView()
   iv1.setImage(image1)
-  iv1.setFitWidth(300.0)
+  iv1.setFitWidth(IMAGE_WIDTH)
   iv1.setPreserveRatio(true)
   iv1.setSmooth(true)
   iv1.setCache(true)
@@ -169,18 +185,19 @@ class MouseEventHandler(val image: ThumbImage) : EventHandler<MouseEvent> {
 
     if(!newImages.isEmpty()){
       println(".found ${newImages}")
-      var rowIndex = 0
+      /*var rowIndex = 0
       var colIndex = 0
-      var MAX_COLS = 4
+      var MAX_COLS = 4*/
       for (image in newImages){
         val iv = getImage(image)
         childImages.add(iv)
-        imagePane.add(iv, colIndex, rowIndex)
-        colIndex++
+        //imagePane.add(iv, colIndex, rowIndex) //for grid
+        imagePane.getChildren().add(iv)
+        /*colIndex++
         if (colIndex == MAX_COLS){
           rowIndex++
           colIndex=colIndex % MAX_COLS
-        }
+        }*/
       }
     }
   }
