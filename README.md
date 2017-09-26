@@ -1,4 +1,6 @@
 # videoFrameBrowser
+[![Build Status](https://travis-ci.org/retinaburn/videoFrameBrowser.svg?branch=master)](https://travis-ci.org/retinaburn/videoFrameBrowser)
+
 Playing around with Kotlin, ffmpeg, javafx to browse video files via framegrabs
 Assist in the browsing and selecting of an still image from a video file for meme generation
 
