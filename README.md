@@ -14,4 +14,9 @@ Idea is:
 To install: mvn install
 
 Proposal 1:
+
 ![Proposal 1](readme/proposal1.png?raw=true)
+
+Proposal 2:
+
+![Proposal 2](readme/proposal2.png?raw=true)
