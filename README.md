@@ -11,5 +11,7 @@ Idea is:
   4. You click on one of those images, and it generates screenshots for every second, from that starting time for 60 seconds (level 3)
   5. You click on one of those images, and it displays the milliseconds/frames
 
+To install: mvn install
 
-mvn install
+Proposal 1:
+![Proposal 1](readme/proposal1.png?raw=true)
